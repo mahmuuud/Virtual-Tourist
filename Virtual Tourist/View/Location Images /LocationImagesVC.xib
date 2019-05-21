@@ -14,6 +14,7 @@
             <connections>
                 <outlet property="imagesCollectionView" destination="KXj-Hw-xOd" id="whz-Ji-rTg"/>
                 <outlet property="newCollectionButton" destination="0D3-DW-lYt" id="Kys-ls-Z1L"/>
+                <outlet property="noImagesLabel" destination="1rq-OA-axZ" id="8uY-ne-lp2"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -36,12 +37,15 @@
                     <rect key="frame" x="0.0" y="832" width="414" height="30"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <state key="normal" title="New Collection"/>
+                    <connections>
+                        <action selector="newCollectionButtonTapped:" destination="-1" eventType="touchUpInside" id="KS1-DX-TZj"/>
+                    </connections>
                 </button>
                 <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wfy-6o-Fyl">
                     <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                     <items>
                         <navigationItem title="Title" id="eyK-IU-gcK">
-                            <barButtonItem key="leftBarButtonItem" systemItem="reply" id="oMu-5d-jwy">
+                            <barButtonItem key="leftBarButtonItem" title="Item" id="oMu-5d-jwy">
                                 <connections>
                                     <action selector="saveButtonTapped:" destination="-1" id="l15-7J-RRA"/>
                                 </connections>
@@ -49,11 +53,18 @@
                         </navigationItem>
                     </items>
                 </navigationBar>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Images." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1rq-OA-axZ">
+                    <rect key="frame" x="164" y="442.5" width="86.5" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="0D3-DW-lYt" secondAttribute="trailing" id="AKt-3w-gUW"/>
                 <constraint firstItem="KXj-Hw-xOd" firstAttribute="bottom" secondItem="0D3-DW-lYt" secondAttribute="top" id="DeI-9T-tVM"/>
+                <constraint firstItem="1rq-OA-axZ" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="II7-mr-aD2"/>
                 <constraint firstItem="0D3-DW-lYt" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="L5B-eB-OuB"/>
                 <constraint firstItem="Wfy-6o-Fyl" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Osj-AF-jLm"/>
                 <constraint firstItem="Wfy-6o-Fyl" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="W93-6y-G6E"/>
@@ -62,6 +73,7 @@
                 <constraint firstItem="KXj-Hw-xOd" firstAttribute="top" secondItem="Wfy-6o-Fyl" secondAttribute="bottom" symbolic="YES" id="mIc-u1-sWl"/>
                 <constraint firstItem="0D3-DW-lYt" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="qPl-Pr-dpD"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="KXj-Hw-xOd" secondAttribute="trailing" id="toB-fs-y9E"/>
+                <constraint firstItem="1rq-OA-axZ" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="wmh-xb-Hcp"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
         </view>

@@ -54,36 +54,17 @@ class Client{
         task.resume()
     }
     
-    class func getImages(photos:[Photo],completionHandler:@escaping([UIImage]?,Error?)->Void){
-        var images:[UIImage] = []
-        let dispatchGroup = DispatchGroup()
-        var count = 20
-        if photos.count < 20 {
-            count = photos.count-1
-        }
-        if count > 0 {
-            for i in 0...count{
-                let url = EndPoints.getImage(farm: photos[i].farm, server: photos[i].server, id: photos[i].id, secret: photos[i].secret).url
-                dispatchGroup.enter()
-                let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-                    if error != nil || data == nil{
-                        completionHandler(nil,error)
-                        return
-                    }
-                    images.append(UIImage(data: data!)!)
-                    dispatchGroup.leave()
-                })
-                task.resume()
+    class func getImages(photo:Photo,completionHandler:@escaping(UIImage?,Error?)->Void){
+        let url = EndPoints.getImage(farm: photo.farm, server: photo.server, id: photo.id, secret: photo.secret).url
+        let task = URLSession.shared.dataTask(with: url) { (data, respone, error) in
+            if error != nil || data == nil{
+                completionHandler(nil,error)
+                return
             }
-            dispatchGroup.notify(queue: DispatchQueue.main) {
-                completionHandler(images,nil)
-                print(images.count)
-            }
+            let image = UIImage(data: data!)!
+            completionHandler(image,nil)
         }
-        else{
-            completionHandler(nil,nil)
-        }
-        
+        task.resume()
     }
   
 }
