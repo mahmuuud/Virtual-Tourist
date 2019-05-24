@@ -53,18 +53,5 @@ class Client{
         }
         task.resume()
     }
-    
-    class func getImages(photo:Photo,completionHandler:@escaping(UIImage?,Error?)->Void){
-        let url = EndPoints.getImage(farm: photo.farm, server: photo.server, id: photo.id, secret: photo.secret).url
-        let task = URLSession.shared.dataTask(with: url) { (data, respone, error) in
-            if error != nil || data == nil{
-                completionHandler(nil,error)
-                return
-            }
-            let image = UIImage(data: data!)!
-            completionHandler(image,nil)
-        }
-        task.resume()
-    }
   
 }

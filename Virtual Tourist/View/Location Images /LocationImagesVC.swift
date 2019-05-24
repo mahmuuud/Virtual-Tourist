@@ -121,18 +121,19 @@ extension LocationImagesVC:UICollectionViewDataSource{
         let cell:ImageCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
         let currentPhoto = self.photos[indexPath.row]
         let imageUrl = Client.EndPoints.getImage(farm: currentPhoto.farm, server: currentPhoto.server, id: currentPhoto.id, secret: currentPhoto.secret).url
-        if photos.count > 0 && cell.tag == 0{
-            self.retrieveImageForLocation(imageUrl: imageUrl) { (image, error) in
-                if error != nil || image == nil{
-                    print("cannot retrieve photo")
-                    return
-                }
-                DispatchQueue.main.async {
-                    cell.tag = 1
-                    cell.configureCell(image: image!)
-                }
-            }
-        }
+        cell.configureCell(imageUrl: imageUrl)
+//        if photos.count > 0 && cell.tag == 0{
+//            self.retrieveImageForLocation(imageUrl: imageUrl) { (image, error) in
+//                if error != nil || image == nil{
+//                    print("cannot retrieve photo")
+//                    return
+//                }
+//                DispatchQueue.main.async {
+//                    cell.tag = 1
+//                    cell.configureCell(image: image!)
+//                }
+//            }
+//        }
         return cell
     }
     
@@ -152,10 +153,12 @@ extension LocationImagesVC:UICollectionViewDelegate{
         if !(selectedImages.contains(indexPath)) {
             selectedImages.append(indexPath)
             newCollectionButton.setTitle("Remove Selected Picture(s)", for: .normal)
+            collectionView.cellForItem(at: indexPath)?.isSelected = true
         }
         
         else{
             for i in 0..<selectedImages.count{
+                collectionView.cellForItem(at: indexPath)?.isSelected = false
                 if selectedImages[i] == indexPath{
                     selectedImages.remove(at: i)
                     break
