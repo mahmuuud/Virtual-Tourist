@@ -45,7 +45,7 @@
                     <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                     <items>
                         <navigationItem title="Title" id="eyK-IU-gcK">
-                            <barButtonItem key="leftBarButtonItem" title="Item" id="oMu-5d-jwy">
+                            <barButtonItem key="leftBarButtonItem" title="SAVE" id="oMu-5d-jwy">
                                 <connections>
                                     <action selector="saveButtonTapped:" destination="-1" id="l15-7J-RRA"/>
                                 </connections>

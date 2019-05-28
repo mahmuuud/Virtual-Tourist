@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class MapVC: UIViewController {
     // MARK: - IBOutlets
@@ -16,15 +17,43 @@ class MapVC: UIViewController {
     var span:MKCoordinateSpan!
     var lat:Double!
     var lon:Double!
-    private var photos:ArraySlice<Photo> = []
+    var dataController:DataController!
+    private var pins:[Pin] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configMapView()
+    }
+    
+    fileprivate func configMapView() {
         self.mapView.isZoomEnabled = true
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(gestureRecognizer:)))
         gestureRecognizer.minimumPressDuration = 0.5
         mapView.addGestureRecognizer(gestureRecognizer)
-        mapView.region.span = self.span
+        if UserDefaults.standard.value(forKey: "locationLat") != nil{
+            mapView.setRegion(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: UserDefaults.standard.value(forKey: "locationLat") as! CLLocationDegrees, longitude: UserDefaults.standard.value(forKey: "locationLon") as! CLLocationDegrees), span: self.span), animated: true)
+        }
+        else{
+            mapView.region.span = self.span
+        }
+        
+        restorePins()
+    }
+    
+    func restorePins(){
+        let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
+        if let pins = try? dataController.viewContext.fetch(fetchRequest){
+            self.pins = pins
+        }
+        
+        if self.pins.count != 0{
+            for pin in self.pins{
+                let annotation = MKPointAnnotation()
+                annotation.coordinate.latitude = pin.lat
+                annotation.coordinate.longitude = pin.lon
+                self.mapView.addAnnotation(annotation)
+            }
+        }
     }
     
     @objc func addAnnotation(gestureRecognizer:UILongPressGestureRecognizer){
@@ -34,6 +63,11 @@ class MapVC: UIViewController {
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinates
             mapView.addAnnotation(annotation)
+            let pin = Pin(context: dataController.viewContext)
+            pin.lat = annotation.coordinate.latitude
+            pin.lon = annotation.coordinate.longitude
+            pins.append(pin)
+            try? dataController.viewContext.save()
             print(mapView.annotations.count)
         }
     }
@@ -71,6 +105,8 @@ extension MapVC:MKMapViewDelegate{
         print("new span: ",mapView.region.span)
         UserDefaults.standard.set(mapView.region.span.latitudeDelta, forKey: "spanLat")
         UserDefaults.standard.set(mapView.region.span.longitudeDelta,forKey: "spanLon")
+        UserDefaults.standard.set(mapView.region.center.latitude, forKey: "locationLat")
+        UserDefaults.standard.set(mapView.region.center.longitude, forKey: "locationLon")
         UserDefaults.standard.synchronize()
         
     }

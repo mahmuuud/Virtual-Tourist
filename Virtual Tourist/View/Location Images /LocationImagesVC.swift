@@ -97,7 +97,7 @@ class LocationImagesVC: UIViewController {
                 self.imagesCollectionView.reloadData()
             }
         }
-        
+            
         else if newCollectionButton.titleLabel?.text == "Remove Selected Picture(s)"{
             self.numberOfImages -= selectedImages.count
             imagesCollectionView.deleteItems(at: selectedImages)
@@ -112,27 +112,27 @@ class LocationImagesVC: UIViewController {
 // MARK: - UICollectionView data source methods
 extension LocationImagesVC:UICollectionViewDataSource{
     
-     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.numberOfImages
     }
     
-     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell:ImageCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
         let currentPhoto = self.photos[indexPath.row]
         let imageUrl = Client.EndPoints.getImage(farm: currentPhoto.farm, server: currentPhoto.server, id: currentPhoto.id, secret: currentPhoto.secret).url
         cell.configureCell(imageUrl: imageUrl)
-//        if photos.count > 0 && cell.tag == 0{
-//            self.retrieveImageForLocation(imageUrl: imageUrl) { (image, error) in
-//                if error != nil || image == nil{
-//                    print("cannot retrieve photo")
-//                    return
-//                }
-//                DispatchQueue.main.async {
-//                    cell.tag = 1
-//                    cell.configureCell(image: image!)
-//                }
-//            }
-//        }
+        //        if photos.count > 0 && cell.tag == 0{
+        //            self.retrieveImageForLocation(imageUrl: imageUrl) { (image, error) in
+        //                if error != nil || image == nil{
+        //                    print("cannot retrieve photo")
+        //                    return
+        //                }
+        //                DispatchQueue.main.async {
+        //                    cell.tag = 1
+        //                    cell.configureCell(image: image!)
+        //                }
+        //            }
+        //        }
         return cell
     }
     
@@ -148,13 +148,13 @@ extension LocationImagesVC:UICollectionViewDelegateFlowLayout{
 // MARK: - UICollectionView Delegate Methods
 extension LocationImagesVC:UICollectionViewDelegate{
     
-     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if !(selectedImages.contains(indexPath)) {
             selectedImages.append(indexPath)
             newCollectionButton.setTitle("Remove Selected Picture(s)", for: .normal)
             collectionView.cellForItem(at: indexPath)?.isSelected = true
         }
-        
+            
         else{
             for i in 0..<selectedImages.count{
                 collectionView.cellForItem(at: indexPath)?.isSelected = false
