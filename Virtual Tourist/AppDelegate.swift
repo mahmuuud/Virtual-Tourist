@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +17,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let mapVC = window?.rootViewController as! MapVC
+        mapVC.span = setZoomLevel()
         return true
+    }
+    
+    func setZoomLevel()->MKCoordinateSpan{
+        if UserDefaults.standard.value(forKey: "spanLat") != nil && UserDefaults.standard.value(forKey: "spanLon") != nil{
+            print ("launched before")
+            let lat = UserDefaults.standard.value(forKey: "spanLat") as! Double
+            let lon = UserDefaults.standard.value(forKey: "spanLon") as! Double
+            return MKCoordinateSpan(latitudeDelta: lat, longitudeDelta: lon)
+        }
+        print("first launch")
+        // Default zoom
+        UserDefaults.standard.set(24.51356906522969, forKey: "spanLat")
+        UserDefaults.standard.set(12.7441409999999, forKey: "spanLon")
+        UserDefaults.standard.synchronize()
+        return MKCoordinateSpan(latitudeDelta: 24.51356906522969, longitudeDelta: 12.7441409999999)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

@@ -11,7 +11,6 @@ import Kingfisher
 class LocationImagesVC: UIViewController {
     private let reuseIdentifier = "ImageCollectionViewCell"
     private let cellNib = UINib(nibName: "ImageCollectionViewCell", bundle: nil)
-    private var images:[UIImage] = []
     private var numberOfImages:Int = 0
     private var selectedImages:[IndexPath] = []
     private var photos:ArraySlice<Photo> = []
@@ -35,7 +34,6 @@ class LocationImagesVC: UIViewController {
     
     func config(){
         self.noImagesLabel.isHidden = true
-        self.newCollectionButton.isEnabled = false
         configCollectionView()
     }
     
@@ -46,6 +44,7 @@ class LocationImagesVC: UIViewController {
     }
     
     fileprivate func getImagesForLocation() {
+        self.newCollectionButton.isEnabled = false
         Client.searchPhoto(lat: lat, lon: lon) { (photos, error)
             in
             if error != nil || photos == nil || photos?.count == 0{
