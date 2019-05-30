@@ -20,7 +20,7 @@ class Client{
         var stringValue:String{
             switch self {
             case .photosSearch(let lat,let lon):
-                return "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(Client.apiKey)&lat=\(lat)&lon=\(lon)&format=json&nojsoncallback=1"
+                return "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(Client.apiKey)&lat=\(lat)&lon=\(lon)&page=\(Int.random(in: 0..<6))&format=json&nojsoncallback=1"
             case .getImage(let farm,let server,let id, let secret):
                 return "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret).jpg"
             }

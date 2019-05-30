@@ -37,10 +37,10 @@ class MapVC: UIViewController {
             mapView.region.span = self.span
         }
         
-        restorePins()
+        restoreSavedPins()
     }
     
-    func restorePins(){
+    func restoreSavedPins(){
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
         if let pins = try? dataController.viewContext.fetch(fetchRequest){
             self.pins = pins
@@ -76,6 +76,18 @@ class MapVC: UIViewController {
         let imagesVC = segue.destination as! LocationImagesVC
         imagesVC.lat = self.lat
         imagesVC.lon = self.lon
+        imagesVC.dataController = self.dataController
+        imagesVC.pin = getTappedPin()
+    }
+    
+    // MARK: - Helpers
+    func getTappedPin()->Pin?{
+        for pin in self.pins{
+            if pin.lat == self.lat && pin.lon == self.lon{
+                return pin
+            }
+        }
+        return nil
     }
 
 }
