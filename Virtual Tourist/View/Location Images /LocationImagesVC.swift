@@ -22,8 +22,8 @@ class LocationImagesVC: UIViewController {
     var dataController:DataController!
     var savedImages:[UIImage] = []
     var savedLocationPhotos:[LocationPhoto] = []
-    var cells:[ImageCollectionViewCell] = []
-    var imagesToSave:[LocationPhoto] = []
+    var imagesDataToSave:[LocationPhoto] = []
+    var savedCells:[IndexPath] = []
     var imagesDidChange:Bool = false
     
     // MARK: - IBOutlets
@@ -34,13 +34,7 @@ class LocationImagesVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         config()
-        
         fetchSavedImages()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        // getImagesForLocation()
     }
     
     func config(){
@@ -59,10 +53,10 @@ class LocationImagesVC: UIViewController {
         fetchRequest.predicate=NSPredicate(format: "pin == %@", self.pin)
         let results = try? dataController.viewContext.fetch(fetchRequest)
         if results?.count ?? 0 > 0{
-            print("there are saved photos")
+            print("there are saved \(results!.count) photos")
             self.numberOfImages = results!.count
+            self.savedLocationPhotos = results!
             for locationPhoto in results!{
-                self.savedLocationPhotos.append(locationPhoto)
                 let image = UIImage(data:locationPhoto.imageData!)
                 self.savedImages.append(image!)
             }
@@ -77,13 +71,13 @@ class LocationImagesVC: UIViewController {
     fileprivate func getImagesForLocation() {
         self.imagesDidChange = true
         self.newCollectionButton.isEnabled = false
-        self.resetSavedImages()
         Client.searchPhoto(lat: lat, lon: lon) { (photos, error)
             in
             if error != nil || photos == nil || photos?.count == 0{
                 print("No Images👾")
                 DispatchQueue.main.async {
                     self.imagesCollectionView.isHidden = true
+                    self.newCollectionButton.isEnabled = true
                     self.noImagesLabel.isHidden = false
                 }
                 return
@@ -120,27 +114,19 @@ class LocationImagesVC: UIViewController {
     
     // MARK: - IBActions
     @IBAction func saveButtonTapped(_ sender: Any) {
+        print(self.imagesDataToSave.count)
         self.dismiss(animated: true, completion: nil)
-        if self.imagesDidChange{
-            print("has changes")
-            for cell in cells{
-                let locationPhoto = LocationPhoto(context: self.dataController.viewContext)
-                if let cellImage = cell.cellImage{
-                    print("cell has image")
-                    locationPhoto.pin = self.pin
-                    locationPhoto.imageData = cellImage.jpegData(compressionQuality: 1)
-                    self.imagesToSave.append(locationPhoto)
-                }
-            }
-            self.cells = []
-            self.imagesToSave = []
-            try? self.dataController.viewContext.save()
+        if self.imagesDidChange {
+            try? dataController.viewContext.save()
         }
         self.imagesDidChange = false
+        self.imagesDataToSave = []
+        self.savedImages = []
     }
     
     @IBAction func newCollectionButtonTapped(_ sender: Any) {
         if newCollectionButton.titleLabel?.text == "New Collection"{
+            self.resetSavedImages()
             self.numberOfImages = 0
             self.getImagesForLocation()
             DispatchQueue.main.async {
@@ -160,8 +146,12 @@ class LocationImagesVC: UIViewController {
         for locationPhoto in self.savedLocationPhotos{
             self.dataController.viewContext.delete(locationPhoto)
         }
-        self.cells = []
+        for locationPhoto in self.imagesDataToSave{
+            self.dataController.viewContext.delete(locationPhoto)
+        }
         self.savedLocationPhotos = []
+        self.imagesDataToSave = []
+        self.savedCells = []
         try? self.dataController.viewContext.save()
     }
     
@@ -176,7 +166,8 @@ extension LocationImagesVC:UICollectionViewDataSource{
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell:ImageCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ImageCollectionViewCell
-        cell.dataController = self.dataController
+        cell.delegate = self
+        cell.cellIndexPath = indexPath
         if self.savedImages.count > 0 && self.photos.count == 0{
             cell.configureCell(imageUrl: nil, image: self.savedImages[indexPath.row])
         }
@@ -186,7 +177,6 @@ extension LocationImagesVC:UICollectionViewDataSource{
             let imageUrl = Client.EndPoints.getImage(farm: currentPhoto.farm, server: currentPhoto.server, id: currentPhoto.id, secret: currentPhoto.secret).url
             cell.configureCell(imageUrl: imageUrl,image:nil)
         }
-        cells.append(cell)
         return cell
     }
     
@@ -204,9 +194,9 @@ extension LocationImagesVC:UICollectionViewDelegate{
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if !(selectedImages.contains(indexPath)) {
+            collectionView.cellForItem(at: indexPath)?.isSelected = true
             selectedImages.append(indexPath)
             newCollectionButton.setTitle("Remove Selected Picture(s)", for: .normal)
-            collectionView.cellForItem(at: indexPath)?.isSelected = true
         }
             
         else{
@@ -221,5 +211,18 @@ extension LocationImagesVC:UICollectionViewDelegate{
                 newCollectionButton.setTitle("New Collection", for: .normal)
             }
         }
+    }
+}
+
+extension LocationImagesVC:CellDidSetImage{
+    func getCellImage(image: UIImage,indexPath:IndexPath) {
+        if !self.savedCells.contains(indexPath){
+            print("saving...")
+            let locationPhoto = LocationPhoto(context: dataController.viewContext)
+            locationPhoto.pin = self.pin
+            locationPhoto.imageData = image.jpegData(compressionQuality: 1)
+            imagesDataToSave.append(locationPhoto)
+        }
+        self.savedCells.append(indexPath)
     }
 }

@@ -12,12 +12,16 @@ protocol LocationImageProtocol {
     func configureCell(imageUrl:URL?,image:UIImage?)
 }
 
+protocol CellDidSetImage {
+    func getCellImage(image:UIImage,indexPath:IndexPath)
+}
+
 class ImageCollectionViewCell: UICollectionViewCell {
     // MARK: - IBOutlets
     @IBOutlet weak var locationImageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    var dataController:DataController!
-    var cellImage:UIImage!
+    var delegate:CellDidSetImage!
+    var cellIndexPath:IndexPath!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,10 +30,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            // set color according to state
-            self.backgroundColor = self.isSelected ? .blue : .clear
+            self.contentView.backgroundColor = isSelected ? UIColor.lightGray : .clear
+            self.locationImageView.alpha = isSelected ? 0.75 : 1.0
         }
-    }
+}
     
     func displayPlaceHolder(){
         self.locationImageView.image = nil
@@ -57,7 +61,7 @@ extension ImageCollectionViewCell:LocationImageProtocol{
                 DispatchQueue.main.async {
                     if self.locationImageView.image != nil{
                         self.resetPlaceHolder()
-                        self.cellImage = self.locationImageView.image
+                        self.delegate.getCellImage(image: self.locationImageView.image!,indexPath: self.cellIndexPath)
                     }
                 }
             }
@@ -66,7 +70,6 @@ extension ImageCollectionViewCell:LocationImageProtocol{
         if image != nil {
             self.locationImageView.image = image
             //self.resetPlaceHolder()
-            self.cellImage = image
         }
     }
     
