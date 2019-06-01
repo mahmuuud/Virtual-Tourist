@@ -22,7 +22,7 @@ class LocationImagesVC: UIViewController {
     var dataController:DataController!
     var savedImages:[UIImage] = []
     var savedLocationPhotos:[LocationPhoto] = []
-    var imagesDataToSave:[LocationPhoto] = []
+    var imagesDataToSave:[IndexPath:LocationPhoto] = [:]
     var savedCells:[IndexPath] = []
     var imagesDidChange:Bool = false
     
@@ -120,7 +120,7 @@ class LocationImagesVC: UIViewController {
             try? dataController.viewContext.save()
         }
         self.imagesDidChange = false
-        self.imagesDataToSave = []
+        self.imagesDataToSave = [:]
         self.savedImages = []
     }
     
@@ -135,8 +135,24 @@ class LocationImagesVC: UIViewController {
         }
             
         else if newCollectionButton.titleLabel?.text == "Remove Selected Picture(s)"{
+            
             self.numberOfImages -= selectedImages.count
             imagesCollectionView.deleteItems(at: selectedImages)
+            for indexPath in selectedImages{
+                print(indexPath)
+                print(imagesDataToSave)
+                if imagesDataToSave.count > 0{
+                    let locationPhoto = imagesDataToSave[indexPath]
+                    dataController.viewContext.delete(locationPhoto!)
+                    imagesDataToSave.removeValue(forKey: indexPath)
+                }
+                else{
+                    let locationPhoto = savedLocationPhotos[indexPath.row]
+                    self.dataController.viewContext.delete(locationPhoto)
+                    //savedLocationPhotos.remove(at: indexPath.row)
+                    self.imagesDidChange = true
+                }
+            }
             self.selectedImages=[]
             self.newCollectionButton.setTitle("New Collection", for: .normal)
         }
@@ -146,11 +162,11 @@ class LocationImagesVC: UIViewController {
         for locationPhoto in self.savedLocationPhotos{
             self.dataController.viewContext.delete(locationPhoto)
         }
-        for locationPhoto in self.imagesDataToSave{
+        for locationPhoto in self.imagesDataToSave.values{
             self.dataController.viewContext.delete(locationPhoto)
         }
         self.savedLocationPhotos = []
-        self.imagesDataToSave = []
+        self.imagesDataToSave = [:]
         self.savedCells = []
         try? self.dataController.viewContext.save()
     }
@@ -221,7 +237,7 @@ extension LocationImagesVC:CellDidSetImage{
             let locationPhoto = LocationPhoto(context: dataController.viewContext)
             locationPhoto.pin = self.pin
             locationPhoto.imageData = image.jpegData(compressionQuality: 1)
-            imagesDataToSave.append(locationPhoto)
+            imagesDataToSave[indexPath] = locationPhoto
         }
         self.savedCells.append(indexPath)
     }
