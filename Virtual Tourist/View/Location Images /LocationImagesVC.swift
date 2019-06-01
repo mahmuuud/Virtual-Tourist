@@ -102,16 +102,6 @@ class LocationImagesVC: UIViewController {
         }
     }
     
-    func retrieveImageForLocation(imageUrl:URL,completionHandler:@escaping (UIImage?,Error?)->Void){
-        KingfisherManager.shared.retrieveImage(with: imageUrl, options: nil, progressBlock: nil) { (image, error, cacheType, url) in
-            if error != nil || image == nil{
-                completionHandler(nil,error)
-                return
-            }
-            completionHandler(image!,nil)
-        }
-    }
-    
     // MARK: - IBActions
     @IBAction func saveButtonTapped(_ sender: Any) {
         print(self.imagesDataToSave.count)
@@ -209,15 +199,16 @@ extension LocationImagesVC:UICollectionViewDelegateFlowLayout{
 extension LocationImagesVC:UICollectionViewDelegate{
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! ImageCollectionViewCell
         if !(selectedImages.contains(indexPath)) {
-            collectionView.cellForItem(at: indexPath)?.isSelected = true
+            cell.checkImageView.isHidden = false
             selectedImages.append(indexPath)
             newCollectionButton.setTitle("Remove Selected Picture(s)", for: .normal)
         }
             
         else{
+            cell.checkImageView.isHidden = true
             for i in 0..<selectedImages.count{
-                collectionView.cellForItem(at: indexPath)?.isSelected = false
                 if selectedImages[i] == indexPath{
                     selectedImages.remove(at: i)
                     break

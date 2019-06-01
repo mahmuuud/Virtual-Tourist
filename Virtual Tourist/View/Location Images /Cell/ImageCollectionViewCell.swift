@@ -20,6 +20,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
     // MARK: - IBOutlets
     @IBOutlet weak var locationImageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var checkImageView: UIImageView!
     var delegate:CellDidSetImage!
     var cellIndexPath:IndexPath!
     
@@ -27,13 +28,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         self.resetPlaceHolder()
     }
-    
-    override var isSelected: Bool {
-        didSet {
-            self.contentView.backgroundColor = isSelected ? UIColor.lightGray : .clear
-            self.locationImageView.alpha = isSelected ? 0.75 : 1.0
-        }
-}
     
     func displayPlaceHolder(){
         self.locationImageView.image = nil

@@ -26,9 +26,18 @@
                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="YUh-wG-Qn3">
                         <rect key="frame" x="88.5" y="60" width="37" height="37"/>
                     </activityIndicatorView>
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="check-symbol" translatesAutoresizingMaskIntoConstraints="NO" id="OFe-rM-1dd">
+                        <rect key="frame" x="8" y="8" width="20" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="mC6-7k-Q65"/>
+                            <constraint firstAttribute="height" constant="20" id="oYc-ZW-CaD"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
             </view>
             <constraints>
+                <constraint firstItem="OFe-rM-1dd" firstAttribute="leading" secondItem="ZTg-uK-7eu" secondAttribute="leading" constant="8" id="4Q8-eh-ej6"/>
+                <constraint firstItem="OFe-rM-1dd" firstAttribute="top" secondItem="O3y-3E-vew" secondAttribute="top" constant="8" id="Fev-SD-pR1"/>
                 <constraint firstAttribute="trailing" secondItem="O3y-3E-vew" secondAttribute="trailing" id="NCE-y6-LPL"/>
                 <constraint firstItem="O3y-3E-vew" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="OfC-C5-7Af"/>
                 <constraint firstItem="O3y-3E-vew" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="T6n-Bf-QrT"/>
@@ -40,9 +49,13 @@
             <size key="customSize" width="214" height="157"/>
             <connections>
                 <outlet property="activityIndicator" destination="YUh-wG-Qn3" id="GLm-QG-YRU"/>
+                <outlet property="checkImageView" destination="OFe-rM-1dd" id="l4h-pK-whE"/>
                 <outlet property="locationImageView" destination="O3y-3E-vew" id="gjc-R2-2Bq"/>
             </connections>
             <point key="canvasLocation" x="106" y="100"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="check-symbol" width="512" height="512"/>
+    </resources>
 </document>

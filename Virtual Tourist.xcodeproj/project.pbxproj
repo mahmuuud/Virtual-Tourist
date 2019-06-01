@@ -67,8 +67,8 @@
 			children = (
 				0CE936C62298443000CF358A /* VirtualTourist-DataModel.xcdatamodeld */,
 				0C7AD2872285D6FE0059DE6E /* Client.swift */,
-				0C091D842288C41300AE4F58 /* Flickr API Responses */,
 				0C7F30CA229CD61400152B0A /* DataController.swift */,
+				0C091D842288C41300AE4F58 /* Flickr API Responses */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -94,6 +94,9 @@
 		0C212A60228C6A840029C1D8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0CA9AB792285D27B00543D62 /* Main.storyboard */,
+				0CA9AB7C2285D27D00543D62 /* Assets.xcassets */,
+				0CA9AB7E2285D27D00543D62 /* LaunchScreen.storyboard */,
 				0C9ED4E522904F450067A636 /* Home */,
 				0C9ED4D6228F40C40067A636 /* Location Images  */,
 			);
@@ -153,9 +156,6 @@
 				0C212A60228C6A840029C1D8 /* View */,
 				0C091D812288C3C100AE4F58 /* Model */,
 				0CA9AB752285D27B00543D62 /* AppDelegate.swift */,
-				0CA9AB792285D27B00543D62 /* Main.storyboard */,
-				0CA9AB7C2285D27D00543D62 /* Assets.xcassets */,
-				0CA9AB7E2285D27D00543D62 /* LaunchScreen.storyboard */,
 				0CA9AB812285D27D00543D62 /* Info.plist */,
 			);
 			path = "Virtual Tourist";
